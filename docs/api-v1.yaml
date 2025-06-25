@@ -1,0 +1,124 @@
+openapi: 3.1.0
+info:
+  title: One Armed Bandit
+  description: Holisticon Coding Kata
+  version: 1.0.0
+servers:
+  - url: 'http://localhost:8080'
+paths:
+  /play:
+    post:
+      description: Play one turn of "One Armed Bandit".
+      tags: [ "Game" ]
+      requestBody:
+        required: true
+        description: Provide a natural number as the amount of credits at stake.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stake:
+                  type: integer
+                  example: 3
+      responses:
+        200:
+          description: The stake was deducted from your balance and the reward was added.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rotation:
+                    type: array
+                    items:
+                      type: string
+                    example: [ "APPLE", "BANANA", "CLEMENTINE" ]
+                  reward:
+                    type: integer
+        400:
+          description: Balance too low. Returns your current balance.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance:
+                    type: integer
+        402:
+          description: Invalid or missing stake. Returns your current balance.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance:
+                    type: integer
+                    example: 10
+
+  /credits/balance:
+    get:
+      description: View the amount of credits in the "One Armed Bandit".
+      tags: [ "Credits" ]
+      responses:
+        200:
+          description: Returns the amount of credits you have.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance:
+                    type: integer
+                    example: 10
+  /credits/deposit:
+    post:
+      description: Deposit credits on your account.
+      tags: [ "Credits" ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  example: 10
+      responses:
+        200:
+          description: Returns your new balance.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance:
+                    type: integer
+
+  /credits/withdraw:
+    post:
+      description: Withdraw credits from your account.
+      tags: [ "Credits" ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: integer
+                  example: 10
+      responses:
+        200:
+          description: Returns your new balance.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  balance:
+                    type: integer
+        400:
+          description: Not enough credits in balance.
