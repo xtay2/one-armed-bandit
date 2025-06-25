@@ -2,7 +2,12 @@ openapi: 3.1.0
 info:
   title: One Armed Bandit
   description: Holisticon Coding Kata
-  version: 1.0.0
+  version: 0.0.1
+  contact:
+    name: Dennis Woithe
+    email: dennis_woithe@web.de
+    url: 'https://github.com/xtay2/one-armed-bandit'
+  summary: A single player implementation of a three-reel slotmachine.
 servers:
   - url: 'http://localhost:8080'
 paths:
@@ -20,6 +25,8 @@ paths:
               properties:
                 stake:
                   type: integer
+                  format: int32
+                  minimum: 3
                   example: 3
       responses:
         200:
@@ -33,28 +40,25 @@ paths:
                     type: array
                     items:
                       type: string
-                    example: [ "APPLE", "BANANA", "CLEMENTINE" ]
+                      enum: [APPLE, BANANA, CLEMENTINE]
+                    example: [APPLE, BANANA, CLEMENTINE]
                   reward:
                     type: integer
+                    format: int32
         400:
           description: Balance too low. Returns your current balance.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  balance:
-                    type: integer
+                $ref: "#/components/responses/OverbookedStakeError"
         402:
           description: Invalid or missing stake. Returns your current balance.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  balance:
-                    type: integer
-                    example: 10
+                oneOf:
+                  - $ref: "#/components/responses/StakeLessThanMinError"
+                  - $ref: "#/components/responses/NegativeStakeError"
 
   /credits/balance:
     get:
@@ -66,59 +70,185 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  balance:
-                    type: integer
-                    example: 10
+                $ref: "#/components/responses/BalanceResponse"
   /credits/deposit:
     post:
       description: Deposit credits on your account.
       tags: [ "Credits" ]
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                amount:
-                  type: integer
-                  example: 10
+        $ref: "#/components/responses/BalanceResponse"
       responses:
         200:
-          description: Returns your new balance.
+          description: "Deposit successful. Returns your new balance."
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  balance:
-                    type: integer
+                $ref: "#/components/responses/BalanceResponse"
+        400:
+          description: Amount must be positive.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/NegativeDepositError"
 
   /credits/withdraw:
     post:
       description: Withdraw credits from your account.
       tags: [ "Credits" ]
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                amount:
-                  type: integer
-                  example: 10
+        $ref: "#/components/requestBodies/TransactionRequest"
       responses:
         200:
-          description: Returns your new balance.
+          description: "Withdrawal Successful."
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  balance:
-                    type: integer
+                $ref: "#/components/responses/BalanceResponse"
         400:
-          description: Not enough credits in balance.
+          description: "Invalid withdrawal amount"
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/responses/NegativeWithdrawalError"
+                  - $ref: "#/components/responses/OverbookedWithdrawalError"
+
+components:
+  requestBodies:
+    TransactionRequest:
+      description: "A transaction of credits. Amount must be positive."
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              amount:
+                type: integer
+                format: int32
+                minimum: 0
+                example: 10
+  responses:
+    BalanceResponse:
+      description: "Returns your new balance."
+      type: object
+      properties:
+        balance:
+          type: integer
+          format: int32
+          minimum: 0
+          example: 10
+    OverbookedStakeError:
+      description: "Stake exceeded the balance."
+      type: object
+      properties:
+        timestamp:
+          type: timestamp
+          example: "2002-06-14T16:00:00.000+00:00"
+        status:
+          type: integer
+          example: 400
+        error:
+          type: string
+          example: "Bad Request"
+        message:
+          type: string
+          example: "Stake cannot be greater than balance (x credits)"
+        path:
+          type: string
+          example: "/play"
+    StakeLessThanMinError:
+      description: "Deposit amount was negative."
+      type: object
+      properties:
+        timestamp:
+          type: string
+          example: "2002-06-14T16:00:00.000+00:00"
+        status:
+          type: integer
+          example: 402
+        error:
+          type: string
+          example: "Payment Required"
+        message:
+          type: string
+          example: "Stake cannot be less than minimum (3 credits)"
+        path:
+          type: string
+          example: "/play"
+    NegativeStakeError:
+      description: "Stake was negative."
+      type: object
+      properties:
+        timestamp:
+          type: string
+          example: "2002-06-14T16:00:00.000+00:00"
+        status:
+          type: integer
+          example: 402
+        error:
+          type: string
+          example: "Payment Required"
+        message:
+          type: string
+          example: "Stake cannot be negative"
+        path:
+          type: string
+          example: "/play"
+    NegativeDepositError:
+      description: "Deposit amount was negative."
+      type: object
+      properties:
+        timestamp:
+          type: string
+          example: "2002-06-14T16:00:00.000+00:00"
+        status:
+          type: integer
+          example: 400
+        error:
+          type: string
+          example: "Bad Request"
+        message:
+          type: string
+          example: "Amount must be positive"
+        path:
+          type: string
+          example: "/credits/deposit"
+    NegativeWithdrawalError:
+      description: "Withdrawal amount was negative."
+      type: object
+      properties:
+        timestamp:
+          type: timestamp
+          example: "2002-06-14T16:00:00.000+00:00"
+        status:
+          type: integer
+          example: 400
+        error:
+          type: string
+          example: "Bad Request"
+        message:
+          type: string
+          example: "Amount must be positive"
+        path:
+          type: string
+          example: "/credits/withdraw"
+    OverbookedWithdrawalError:
+      description: "Withdrawal amount exceeded the balance."
+      type: object
+      properties:
+        timestamp:
+          type: timestamp
+          example: "2002-06-14T16:00:00.000+00:00"
+        status:
+          type: integer
+          example: 400
+        error:
+          type: string
+          example: "Bad Request"
+        message:
+          type: string
+          example: "Amount must be less or equal to the balance (x credits)"
+        path:
+          type: string
+          example: "/credits/withdraw"

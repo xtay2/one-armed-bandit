@@ -19,7 +19,7 @@ public class GameController {
     ResponseEntity<GameResultResponse> play(@RequestBody GamePlayRequest request) {
         var stake = request.stake();
         if (stake < 0)
-            throw new ResponseStatusException(HttpStatus.PAYMENT_REQUIRED, "Stake cannot be negative.");
+            throw new ResponseStatusException(HttpStatus.PAYMENT_REQUIRED, "Stake cannot be negative");
         if (stake < MIN_STAKE)
             throw new ResponseStatusException(HttpStatus.PAYMENT_REQUIRED, "Stake cannot be less than minimum (" + MIN_STAKE + " credits)");
         var result = Game.play(stake);
