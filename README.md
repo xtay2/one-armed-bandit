@@ -3,6 +3,12 @@
 - Die Anwendung ist [Java 24](https://openjdk.org/projects/jdk/24/) geschrieben.
 - Die Api-Spezifikation kann im [Swagger Editor](https://editor-next.swagger.io/?url=https://raw.githubusercontent.com/xtay2/one-armed-bandit/refs/heads/master/docs/api-v1.yaml) eingesehen werden.
 
+## How to run?
+Spring Anwendung starten:
+```bash
+./gradlew clean bootRun
+```
+
 ---
 
 # Aufgabe: Einarmiger Bandit
