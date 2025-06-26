@@ -1,8 +1,5 @@
 package com.xtay2.onearmedbandit.services.credits;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
-
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.IntUnaryOperator;
 
@@ -20,8 +17,7 @@ public class CreditStore {
     public static int transaction(IntUnaryOperator func) {
         synchronized (BALANCE) {
             var res = func.applyAsInt(BALANCE.get());
-            if (res < 0)
-                throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid Balance");
+            assert res >= 0 : "Invalid Balance";
             BALANCE.set(res);
             return res;
         }
