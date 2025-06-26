@@ -93,7 +93,6 @@ public class SuccessfulGameTest {
         expectedBalance = balance;
     }
 
-
     @SuppressWarnings("SameParameterValue")
     private void playNGamesWithStakeX(int games, int stake) throws Exception {
         var objectMapper = new ObjectMapper();

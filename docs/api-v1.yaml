@@ -1,3 +1,4 @@
+#file: noinspection YAMLSchemaValidation
 openapi: 3.1.0
 info:
   title: One Armed Bandit
@@ -27,7 +28,8 @@ paths:
                   type: integer
                   format: int32
                   minimum: 3
-                  example: 3
+                  examples:
+                    - 3
       responses:
         200:
           description: The stake was deducted from your balance and the reward was added.
@@ -41,7 +43,8 @@ paths:
                     items:
                       type: string
                       enum: [ APPLE, BANANA, CLEMENTINE ]
-                    example: [ APPLE, BANANA, CLEMENTINE ]
+                    examples:
+                      - [ APPLE, BANANA, CLEMENTINE ]
                   reward:
                     type: integer
                     format: int32
@@ -139,137 +142,202 @@ components:
                 type: integer
                 format: int32
                 minimum: 0
-                example: 10
+                examples:
+                  - 0
+                  - 10
+                  - 100
   responses:
     BalanceResponse:
       description: "Returns the new balance."
-      type: object
-      properties:
-        balance:
-          type: integer
-          format: int32
-          minimum: 0
-          example: 10
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              balance:
+                type: integer
+                format: int32
+                minimum: 0
+                examples:
+                  - 10
     CreditClearResponse:
       description: "Returns the amount of credits cleared from the account."
-      type: object
-      properties:
-        credits:
-          type: integer
-          format: int32
-          minimum: 0
-          example: 10
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              credits:
+                type: integer
+                format: int32
+                minimum: 0
+                examples:
+                  - 10
     OverbookedStakeError:
       description: "Stake exceeded the balance."
-      type: object
-      properties:
-        timestamp:
-          type: timestamp
-          example: "2002-06-14T16:00:00.000+00:00"
-        status:
-          type: integer
-          example: 400
-        error:
-          type: string
-          example: "Bad Request"
-        message:
-          type: string
-          example: "Stake cannot be greater than balance (x credits)"
-        path:
-          type: string
-          example: "/play"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                format: timestamp
+                examples:
+                  - "2002-06-14T16:00:00.000+00:00"
+              status:
+                type: integer
+                examples:
+                  - 400
+              error:
+                type: string
+                examples:
+                  - Bad Request"
+              message:
+                type: string
+                examples:
+                  - "Stake cannot be greater than balance (x credits)"
+              path:
+                type: string
+                examples:
+                  - "/play"
     StakeLessThanMinError:
       description: "Deposit amount was negative."
-      type: object
-      properties:
-        timestamp:
-          type: string
-          example: "2002-06-14T16:00:00.000+00:00"
-        status:
-          type: integer
-          example: 402
-        error:
-          type: string
-          example: "Payment Required"
-        message:
-          type: string
-          example: "Stake cannot be less than minimum (3 credits)"
-        path:
-          type: string
-          example: "/play"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                format: timestamp
+                examples:
+                  - "2002-06-14T16:00:00.000+00:00"
+              status:
+                type: integer
+                examples:
+                  - 402
+              error:
+                type: string
+                examples:
+                  - "Payment Required"
+              message:
+                type: string
+                examples:
+                  - "Stake cannot be less than minimum (3 credits)"
+              path:
+                type: string
+                examples:
+                  - "/play"
     NegativeStakeError:
       description: "Stake was negative."
-      type: object
-      properties:
-        timestamp:
-          type: string
-          example: "2002-06-14T16:00:00.000+00:00"
-        status:
-          type: integer
-          example: 402
-        error:
-          type: string
-          example: "Payment Required"
-        message:
-          type: string
-          example: "Stake cannot be negative"
-        path:
-          type: string
-          example: "/play"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                format: timestamp
+                examples:
+                  - "2002-06-14T16:00:00.000+00:00"
+              status:
+                type: integer
+                examples:
+                  - 402
+              error:
+                type: string
+                examples:
+                  - "Payment Required"
+              message:
+                type: string
+                examples:
+                  - "Stake cannot be negative"
+              path:
+                type: string
+                examples:
+                  - "/play"
     NegativeDepositError:
       description: "Deposit amount was negative."
-      type: object
-      properties:
-        timestamp:
-          type: string
-          example: "2002-06-14T16:00:00.000+00:00"
-        status:
-          type: integer
-          example: 400
-        error:
-          type: string
-          example: "Bad Request"
-        message:
-          type: string
-          example: "Amount must be positive"
-        path:
-          type: string
-          example: "/credits/deposit"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                format: timestamp
+                examples:
+                  - "2002-06-14T16:00:00.000+00:00"
+              status:
+                type: integer
+                examples:
+                  - 400
+              error:
+                type: string
+                examples:
+                  - "Bad Request"
+              message:
+                type: string
+                examples:
+                  - "Amount must be positive"
+              path:
+                type: string
+                examples:
+                  - "/credits/deposit"
     NegativeWithdrawalError:
       description: "Withdrawal amount was negative."
-      type: object
-      properties:
-        timestamp:
-          type: timestamp
-          example: "2002-06-14T16:00:00.000+00:00"
-        status:
-          type: integer
-          example: 400
-        error:
-          type: string
-          example: "Bad Request"
-        message:
-          type: string
-          example: "Amount must be positive"
-        path:
-          type: string
-          example: "/credits/withdraw"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                format: timestamp
+                examples:
+                  - "2002-06-14T16:00:00.000+00:00"
+              status:
+                type: integer
+                examples:
+                  - 400
+              error:
+                type: string
+                examples:
+                  - "Bad Request"
+              message:
+                type: string
+                examples:
+                  - "Amount must be positive"
+              path:
+                type: string
+                examples:
+                  - "/credits/withdraw"
     OverbookedWithdrawalError:
       description: "Withdrawal amount exceeded the balance."
-      type: object
-      properties:
-        timestamp:
-          type: timestamp
-          example: "2002-06-14T16:00:00.000+00:00"
-        status:
-          type: integer
-          example: 400
-        error:
-          type: string
-          example: "Bad Request"
-        message:
-          type: string
-          example: "Amount must be less or equal to the balance (x credits)"
-        path:
-          type: string
-          example: "/credits/withdraw"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              timestamp:
+                type: string
+                format: timestamp
+                examples:
+                  - "2002-06-14T16:00:00.000+00:00"
+              status:
+                type: integer
+                examples:
+                  - 400
+              error:
+                type: string
+                examples:
+                  - "Bad Request"
+              message:
+                type: string
+                examples:
+                  - "Amount must be less or equal to the balance (x credits)"
+              path:
+                type: string
+                examples:
+                  - "/credits/withdraw"
