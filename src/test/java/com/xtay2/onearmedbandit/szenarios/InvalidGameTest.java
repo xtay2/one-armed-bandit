@@ -22,6 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /// - Deposit 10 credits
 /// - Try to play 1 game with stake 1
 /// - Try to play 1 game with stake -50
+/// - Try to overflow the balance
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -101,6 +102,22 @@ public class InvalidGameTest {
                                 """))
                 .andDo(print())
                 .andExpect(status().isPaymentRequired());
+        assertBalance(expectedBalance);
+    }
+
+    @Test
+    @Order(6)
+    void tryDepositOverflow() throws Exception {
+        int addedBalance = Integer.MAX_VALUE;
+        mockMvc.perform(post("/credits/deposit")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "amount": %d
+                                }
+                                """.formatted(addedBalance)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
         assertBalance(expectedBalance);
     }
 
