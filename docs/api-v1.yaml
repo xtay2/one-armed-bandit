@@ -40,8 +40,8 @@ paths:
                     type: array
                     items:
                       type: string
-                      enum: [APPLE, BANANA, CLEMENTINE]
-                    example: [APPLE, BANANA, CLEMENTINE]
+                      enum: [ APPLE, BANANA, CLEMENTINE ]
+                    example: [ APPLE, BANANA, CLEMENTINE ]
                   reward:
                     type: integer
                     format: int32
@@ -113,6 +113,18 @@ paths:
                   - $ref: "#/components/responses/NegativeWithdrawalError"
                   - $ref: "#/components/responses/OverbookedWithdrawalError"
 
+  /credits/clear:
+    post:
+      description: Withdraw all credits from your account.
+      tags: [ "Credits" ]
+      responses:
+        200:
+          description: "Withdrawal Successful."
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/responses/CreditClearResponse"
+
 components:
   requestBodies:
     TransactionRequest:
@@ -130,10 +142,19 @@ components:
                 example: 10
   responses:
     BalanceResponse:
-      description: "Returns your new balance."
+      description: "Returns the new balance."
       type: object
       properties:
         balance:
+          type: integer
+          format: int32
+          minimum: 0
+          example: 10
+    CreditClearResponse:
+      description: "Returns the amount of credits cleared from the account."
+      type: object
+      properties:
+        credits:
           type: integer
           format: int32
           minimum: 0

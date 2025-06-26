@@ -2,6 +2,7 @@ package com.xtay2.onearmedbandit.http.controllers;
 
 import com.xtay2.onearmedbandit.http.requests.CreditTransactionRequest;
 import com.xtay2.onearmedbandit.http.responses.BalanceResponse;
+import com.xtay2.onearmedbandit.http.responses.CreditClearResponse;
 import com.xtay2.onearmedbandit.services.credits.CreditStore;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RestController
 public class CreditController {
@@ -41,6 +44,16 @@ public class CreditController {
         });
 
         return ResponseEntity.ok(new BalanceResponse(newBalance));
+    }
+
+    @PostMapping("/credits/clear")
+    ResponseEntity<CreditClearResponse> clear() {
+        var oldBalance = new AtomicInteger();
+        CreditStore.transaction(balance -> {
+            oldBalance.set(balance);
+            return 0;
+        });
+        return ResponseEntity.ok(new CreditClearResponse(oldBalance.get()));
     }
 
 }
