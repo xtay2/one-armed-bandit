@@ -4,6 +4,7 @@ import com.xtay2.onearmedbandit.persistence.games.GameRecord;
 import com.xtay2.onearmedbandit.persistence.games.GameRecordRepository;
 import com.xtay2.onearmedbandit.persistence.transactions.TransactionType;
 import com.xtay2.onearmedbandit.services.credits.CreditStoreService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -11,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class GameService {
 
     /// The minimum stake the player has to bet.
@@ -21,11 +23,6 @@ public class GameService {
 
     private final CreditStoreService creditStoreService;
     private final GameRecordRepository gameRecordRepository;
-
-    public GameService(CreditStoreService creditStoreService, GameRecordRepository gameRecordRepository) {
-        this.creditStoreService = creditStoreService;
-        this.gameRecordRepository = gameRecordRepository;
-    }
 
     public GameResult play(int stake) {
         var result = simulateNewGame(stake);
