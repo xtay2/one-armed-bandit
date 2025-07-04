@@ -79,7 +79,7 @@ paths:
       description: Deposit credits on your account.
       tags: [ "Credits" ]
       requestBody:
-        $ref: "#/components/responses/BalanceResponse"
+        $ref: "#/components/requestBodies/TransactionRequest"
       responses:
         200:
           description: "Deposit successful. Returns your new balance."

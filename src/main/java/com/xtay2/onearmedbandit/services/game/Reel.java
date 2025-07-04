@@ -1,7 +1,7 @@
 package com.xtay2.onearmedbandit.services.game;
 
+import java.security.SecureRandom;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 
 public enum Reel {
 
@@ -17,7 +17,7 @@ public enum Reel {
     /// @return a random, immutable list with the specified amount of reels.
     public static List<Reel> randomRotation(int reelAmount) {
         var reelValues = Reel.values();
-        return ThreadLocalRandom.current()
+        return new SecureRandom()
                 .ints(reelAmount, 0, reelValues.length)
                 .mapToObj(randInt -> reelValues[randInt])
                 .toList();
